@@ -1,0 +1,10 @@
+go 1.20
+
+use (
+	./hello-world/v1
+	./hello-world/v2
+	./hello-world/v3
+	./hello-world/v4
+	./hello-world/v5
+	./hello-world/v6
+)

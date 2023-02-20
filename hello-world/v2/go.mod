@@ -1,3 +1,3 @@
-module hello-world
+module hello-world/v2
 
 go 1.20
