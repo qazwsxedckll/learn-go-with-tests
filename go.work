@@ -9,5 +9,5 @@ use (
 	./hello-world/v6
 	./iteration
 	./arrays
-	./http-server
+	./poker
 )
