@@ -63,10 +63,10 @@ func NewPostWinRequest(name string) *http.Request {
 	return req
 }
 
-func AssertStatus(t testing.TB, got, want int) {
+func AssertStatus(t testing.TB, got *httptest.ResponseRecorder, want int) {
 	t.Helper()
-	if got != want {
-		t.Errorf("did not get correct status, got %d, want %d", got, want)
+	if got.Code != want {
+		t.Errorf("did not get correct status, got %d, want %d", got.Code, want)
 	}
 }
 
@@ -107,9 +107,29 @@ type SpyBlindAlerter struct {
 	Alerts []ScheduledAlert
 }
 
-func (s *SpyBlindAlerter) ScheduleAlertAt(at time.Duration, amount int) {
+func (s *SpyBlindAlerter) ScheduleAlertAt(at time.Duration, amount int, to io.Writer) {
 	s.Alerts = append(s.Alerts, ScheduledAlert{
 		At:     at,
 		Amount: amount,
 	})
+}
+
+type GameSpy struct {
+	StartCalled     bool
+	StartCalledWith int
+	BlindAlert      []byte
+
+	FinishedCalled   bool
+	FinishCalledWith string
+}
+
+func (g *GameSpy) Start(numberOfPlayers int, out io.Writer) {
+	g.StartCalled = true
+	g.StartCalledWith = numberOfPlayers
+	out.Write(g.BlindAlert)
+}
+
+func (g *GameSpy) Finish(winner string) {
+	g.FinishedCalled = true
+	g.FinishCalledWith = winner
 }

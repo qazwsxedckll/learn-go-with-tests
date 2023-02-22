@@ -1,21 +1,20 @@
-package poker_test
+package poker
 
 import (
 	"fmt"
+	"os"
 	"testing"
 	"time"
-
-	"poker"
 )
 
 func TestGame_Start(t *testing.T) {
 	t.Run("schedules alerts on game start for 5 players", func(t *testing.T) {
-		blindAlerter := &poker.SpyBlindAlerter{}
-		game := poker.NewTexasHoldem(blindAlerter, dummyPlayerStore)
+		blindAlerter := &SpyBlindAlerter{}
+		game := NewTexasHoldem(blindAlerter, dummyPlayerStore)
 
-		game.Start(5)
+		game.Start(5, os.Stdout)
 
-		cases := []poker.ScheduledAlert{
+		cases := []ScheduledAlert{
 			{At: 0 * time.Second, Amount: 100},
 			{At: 10 * time.Minute, Amount: 200},
 			{At: 20 * time.Minute, Amount: 300},
@@ -33,12 +32,12 @@ func TestGame_Start(t *testing.T) {
 	})
 
 	t.Run("schedules alerts on game start for 7 players", func(t *testing.T) {
-		blindAlerter := &poker.SpyBlindAlerter{}
-		game := poker.NewTexasHoldem(blindAlerter, dummyPlayerStore)
+		blindAlerter := &SpyBlindAlerter{}
+		game := NewTexasHoldem(blindAlerter, dummyPlayerStore)
 
-		game.Start(7)
+		game.Start(7, os.Stdout)
 
-		cases := []poker.ScheduledAlert{
+		cases := []ScheduledAlert{
 			{At: 0 * time.Second, Amount: 100},
 			{At: 12 * time.Minute, Amount: 200},
 			{At: 24 * time.Minute, Amount: 300},
@@ -49,7 +48,7 @@ func TestGame_Start(t *testing.T) {
 	})
 }
 
-func checkSchedulingCases(cases []poker.ScheduledAlert, t *testing.T, blindAlerter *poker.SpyBlindAlerter) {
+func checkSchedulingCases(cases []ScheduledAlert, t *testing.T, blindAlerter *SpyBlindAlerter) {
 	for i, want := range cases {
 		t.Run(fmt.Sprint(want), func(t *testing.T) {
 			if len(blindAlerter.Alerts) <= i {
